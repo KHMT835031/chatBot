@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatBot Tin học 9</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+        }
+        .chat-container {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .chat-header {
+            background: #1976d2;
+            color: #fff;
+            padding: 18px;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 0;
+        }
+        .chat-header .icon {
+            font-size: 26px;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: #f9fbfd;
+        }
+        .message {
+            max-width: 85%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.7;
+            word-break: break-word;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .user {
+            align-self: flex-end;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        .bot {
+            align-self: flex-start;
+            background: #f1f1f1;
+            color: #222;
+            border-left: 4px solid #1976d2;
+        }
+        .chat-input-area {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding: 14px;
+            background: #fafafa;
+            border-radius: 0;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 18px;
+            font-size: 16px;
+            outline: none;
+        }
+        .chat-send-btn {
+            margin-left: 10px;
+            padding: 0 22px;
+            border: none;
+            border-radius: 18px;
+            background: #1976d2;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chat-send-btn:active {
+            background: #1565c0;
+        }
+        /* Markdown style for bot message */
+        .bot strong { color: #1976d2; }
+        .bot ul { margin: 8px 0 8px 24px; }
+        .bot li { margin-bottom: 6px; }
+        .bot .lesson-title {
+            font-weight: bold;
+            color: #1565c0;
+            margin-bottom: 2px;
+        }
+        .bot .lesson-desc {
+            margin-bottom: 8px;
+        }
+        .bot .lesson-list {
+            margin: 8px 0 8px 0;
+            padding: 0;
+            list-style: none;
+        }
+        .bot .lesson-list li {
+            margin-bottom: 10px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+        /* Highlight code block */
+        .bot pre, .bot code {
+            font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+            background: #23272e;
+            color: #e3eafc;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 15px;
+            overflow-x: auto;
+            display: block;
+        }
+        .bot code {
+            padding: 2px 6px;
+            background: #23272e;
+            color: #e3eafc;
+            border-radius: 4px;
+            display: inline;
+        }
+        .bot pre code {
+            padding: 0;
+            background: none;
+            color: inherit;
+            border-radius: 0;
+        }
+        @media (max-width: 600px) {
+            .chat-header, .chat-messages, .chat-input-area {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+            .chat-messages {
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header"><span class="icon">🤖</span> ChatBot Tin học 9</div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">
+                <strong>Xin chào!</strong> Hãy đặt câu hỏi về Tin học 9.<br>
+                <span style="font-size:13px;color:#888;">(Ví dụ: "Hàm IF lồng nhau là gì?", "Cách dùng hàm AND trong Excel?")</span>
+            </div>
+        </div>
+        <form class="chat-input-area" id="chat-form" autocomplete="off">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Nhập câu hỏi..." autofocus required />
+            <button type="submit" class="chat-send-btn">Gửi</button>
+        </form>
+    </div>
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+
+        // Markdown rendering for bot message (bold, list, linebreak, code block)
+        function renderMarkdown(text) {
+            // Code block (```lang ... ```
+            text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
+                return `<pre><code class="lang-${lang || ''}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+            });
+            // Inline code
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // Bold
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // List item
+            text = text.replace(/\n\s*[\*\-] (.+)/g, '\n<li>$1</li>');
+            // Numbered list
+            text = text.replace(/\n\s*\d+\. (.+)/g, '\n<li>$1</li>');
+            // Wrap list items with <ul>
+            text = text.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul class="lesson-list">$1</ul>');
+            // Line breaks
+            
+            return text;
+        }
+
+        function appendMessage(text, sender) {
+            const msg = document.createElement('div');
+            msg.className = 'message ' + sender;
+            if (sender === 'bot') {
+                msg.innerHTML = renderMarkdown(text);
+            } else {
+                msg.textContent = text;
+            }
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userMsg = chatInput.value.trim();
+            if (!userMsg) return;
+            appendMessage(userMsg, 'user');
+            chatInput.value = '';
+            appendMessage('Đang trả lời...', 'bot');
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg })
+                });
+                const data = await res.json();
+                // Xóa "Đang trả lời..."
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage(data.reply, 'bot');
+            } catch {
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage('Có lỗi xảy ra, vui lòng thử lại.', 'bot');
+            }
+        });
+    </script>
+</body>
+</html>
