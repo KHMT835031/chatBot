@@ -38,11 +38,56 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            border-radius: 0;
+            justify-content: space-between;
         }
         .chat-header .icon {
             font-size: 26px;
         }
-        .chat-header .user-info {
+        .chat-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-header .header-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .auth-btns {
+            display: flex;
+            gap: 12px;
+        }
+        .auth-btn {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 26px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+            display: inline-block;
+        }
+        .auth-btn.register {
+            background: #388e3c;
+        }
+        .auth-btn:hover, .auth-btn.register:hover {
+            background: #1565c0;
+            color: #fff;
+            text-decoration: none;
+        }
+        .auth-btn.register:hover {
+            background: #2e7031;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             font-size: 15px;
             color: #fff;
             font-weight: normal;
@@ -52,7 +97,7 @@
             background: #388e3c;
             border-radius: 6px;
             padding: 4px 12px;
-            margin-left: 10px;
+            margin-left: 0;
             text-decoration: none;
             font-size: 15px;
         }
@@ -61,7 +106,7 @@
             background: #d32f2f;
             border-radius: 6px;
             padding: 4px 12px;
-            margin-left: 10px;
+            margin-left: 0;
             text-decoration: none;
             font-size: 15px;
         }
@@ -170,7 +215,22 @@
             .chat-header .icon {
                 font-size: 20px;
             }
-            .chat-header .user-info {
+            .chat-header .header-left {
+                font-size: 15px;
+            }
+            .chat-header .header-right {
+                gap: 6px;
+            }
+            .auth-btns {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .auth-btn {
+                width: 100%;
+                font-size: 15px;
+                padding: 10px 0;
+            }
+            .user-info {
                 font-size: 13px;
             }
             .chat-messages {
@@ -193,15 +253,6 @@
                 padding: 0 12px;
                 border-radius: 14px;
             }
-            .auth-btns {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .auth-btn {
-                width: 100%;
-                font-size: 15px;
-                padding: 12px 0;
-            }
         }
         @media (max-width: 600px) {
             .chat-header, .chat-messages, .chat-input-area {
@@ -218,21 +269,25 @@
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <span><span class="icon">🤖</span> ChatBot Tin học 9</span>
-            <span class="user-info">
+            <div class="header-left">
+                <span class="icon">🤖</span> ChatBot Tin học 9
+            </div>
+            <div class="header-right">
                 {% if user %}
-                    Xin chào, <b>{{ user }}</b>
-                    {% if is_admin %}
-                        <a class="admin-link" href="{{ url_for('admin_dashboard') }}">Quản trị</a>
-                    {% endif %}
-                    <a class="logout-link" href="{{ url_for('logout') }}">Đăng xuất</a>
+                    <div class="user-info">
+                        Xin chào, <b>{{ user }}</b>
+                        {% if is_admin %}
+                            <a class="admin-link" href="{{ url_for('admin_dashboard') }}">Quản trị</a>
+                        {% endif %}
+                        <a class="logout-link" href="{{ url_for('logout') }}">Đăng xuất</a>
+                    </div>
                 {% else %}
                     <div class="auth-btns">
                         <a href="{{ url_for('login') }}" class="auth-btn">Đăng nhập</a>
-                        <a href="{{ url_for('register') }}" class="auth-btn" style="background:#388e3c;">Đăng ký</a>
+                        <a href="{{ url_for('register') }}" class="auth-btn register">Đăng ký</a>
                     </div>
                 {% endif %}
-            </span>
+            </div>
         </div>
         <div class="chat-messages" id="chat-messages">
             <div class="message bot">
@@ -288,26 +343,6 @@
             const userMsg = chatInput.value.trim();
             if (!userMsg) return;
             appendMessage(userMsg, 'user');
-            chatInput.value = '';
-            appendMessage('Đang trả lời...', 'bot');
-            try {
-                const res = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userMsg })
-                });
-                const data = await res.json();
-                // Xóa "Đang trả lời..."
-                chatMessages.removeChild(chatMessages.lastChild);
-                appendMessage(data.reply, 'bot');
-            } catch {
-                chatMessages.removeChild(chatMessages.lastChild);
-                appendMessage('Có lỗi xảy ra, vui lòng thử lại.', 'bot');
-            }
-        });
-    </script>
-</body>
-</html>
             chatInput.value = '';
             appendMessage('Đang trả lời...', 'bot');
             try {
