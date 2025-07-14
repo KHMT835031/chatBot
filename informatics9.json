@@ -1,0 +1,72 @@
+{
+  "chu_de_1": {
+    "ten": "Máy tính và cộng đồng",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",    
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Nhận biết được sự có mặt của các thiết bị có gắn bộ xử lí thông tin ở khắp nơi (trong gia đình, ở trường học, cửa hàng, bệnh viện, công sở, nhà máy,...), trong mọi lĩnh vực (y tế, ngân hàng, hàng không,toán học,sinh học,...), nêu được ví dụ minh hoạ.",
+    "noidung_2": "Nêu được khả năng của máy tính và chỉ ra được một số ứng dụng thực tế của nó trong khoa học kĩ thuật và đời sống.",
+    "noidung_3": "Giải thích được tác động của công nghệ thông tin lên giáo dục và xã hội thông qua các ví dụ cụ thể."
+  },
+  "chu_de_2": {
+    "ten": "Tổ chức lưu trữ, tìm kiếm và trao đổi thông tin",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Giải thích được sự cần thiết phải quan tâm đến chất lượng thông tin khi tìm kiếm, tiếp nhận và trao đổi thông tin.Nêu được ví dụ minh hoạ.",
+    "noidung_2": "Giải thích được tính mới, tính chính xác, tính đầy đủ, tính sử dụng được của thông tin.Nêu được ví dụ minh hoạ."
+  },
+  "chu_de_3": {
+    "ten": "Đạo đức, pháp luật và văn hoá trong môi trường số",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Trình bày được một số tác động tiêu cực của công nghệ kĩ thuật số đối với đời sống con người và xã hội, nêu được ví dụ minh hoạ.",
+    "noidung_2": "Nêu được một số nội dung liên quan đến luật Công nghệ thông tin, nghị định về sử dụng dịch vụ Internet, các khía cạnh pháp lí của việc sở hữu, sử dụng và trao đổi thông tin.",
+    "noidung_3": "Nêu được một số hành vi vi phạm pháp luật, trái đạo đức,thiếu văn hoá khi hoạt động trong môi trường số thông qua một vài ví dụ."
+  },
+  "chu_de_4": {
+    "ten": "Ứng dụng tin học",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Nêu được ví dụ phần mềm mô phỏng.",
+    "noidung_2": "Nêu được những kiến thức đã thu nhận từ việc khai thác một vài phần mềm mô phỏng.",
+    "noidung_3": "Nhận biết được sự mô phỏng thế giới thực nhờ máy tính có thể giúp con người khám phá tri thức và giải quyết vấn đề.",
+    "noidung_4": "Biết được khả năng đính kèm văn bản, ảnh, video, trang tính vào sơ đồ tư duy.",
+    "noidung_5": "Sử dụng được hình ảnh, biểu đồ, video một cách hợp lí.",
+    "noidung_6": "Sử dụng được bài trình chiếu và sơ đồ tư duy trong trao đổi thông tin và hợp tác.",
+    "noidung_7": "Thực hiện được dự án sử dụng bảng tính điện tử góp phần giải quyết một bài toán liên quan đến quản lí tài chính, dân số,... Ví dụ: quản lí chi tiêu của gia đình, quản lí thu chi quỹ lớp.",
+    "noidung_8": "Nêu được một số chức năng và thực hiện được một số thao tác cơ bản trong sử dụng một phần mềm làm video.",
+    "noidung_9": "Tạo được một vài đoạn video đáp ứng nhu cầu cuộc sống của cá nhân, gia đình, trường học, địa phương."
+  },
+  "chu_de_5": {
+    "ten": "Giải quyết vấn đề với sự trợ giúp của máy tính",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Trình bày được quá trình giải quyết vấn đề vàmô tả được giải pháp dưới dạng thuật toán (hoặc bằng phương pháp liệt kê các bước hoặc bằng sơ đồ khối).",
+    "noidung_2": "Sử dụng được cấu trúc tuần tự, rẽ nhánh, lặp trong mô tả thuật toán.",
+    "noidung_3": "Giải thích được trong quy trình giải quyết vấn đề có những bước (những vấn đề nhỏ hơn) có thể chuyển giao cho máy tính thực hiện, nêu được ví dụ minh hoạ.",
+    "noidung_4": "Giải thích được khái niệm bài toán trong tin học là một nhiệm vụ có thể giao cho máy tính thực hiện, nêu được ví dụ minh hoạ.",
+    "noidung_5": "Giải thích được chương trình là bản mô tả thuật toán bằng ngôn ngữ mà máy tính có thể “hiểu” và thực hiện.",
+    "noidung_6": "Nêu được quy trình con người giao bài toán cho máy tính giải quyết."
+  },
+  "chu_de_6": {
+    "ten": "Hướng nghiệp với tin học",
+    "vidu": [
+      "Ví dụ minh họa từ nội dung",
+      "Thông tin thêm có thể"
+    ],
+    "noidung_1": "Trình bày được công việc đặc thù và sản phẩm chính của người làm tin họctrong ít nhất ba nhóm nghề.",
+    "noidung_2": "Nêu và giải thích được ý kiến cá nhân (thích hay không thích,...) về một nhóm nghề nào đó.",
+    "noidung_3": "Nhận biết được đặc trưng cơ bản của nhóm nghề thuộc hướng Tin học ứng dụng và nhóm nghề thuộc hướng Khoa học máy tính.",
+    "noidung_4": "Tìm hiểu được (thông qua Internet và những kênh thông tin khác) công việc ở một số doanh nghiệp, công ti có sử dụng nhân lực thuộc các nhóm ngành đã được giới thiệu.",
+    "noidung_5": "Giải thích được cả nam và nữ đều có thể thích hợp với các ngành nghề trong lĩnh vực tin học, nêu được ví dụ minh hoạ."
+  }
+}

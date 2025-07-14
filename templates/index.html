@@ -4,31 +4,68 @@
     <meta charset="UTF-8">
     <title>ChatBot Tin học 9</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f6f6f6; margin: 0; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            margin: 0;
+            height: 100vh;
+            width: 100vw;
+        }
         .chat-container {
-            max-width: 540px;
-            margin: 40px auto;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
             display: flex;
             flex-direction: column;
-            height: 80vh;
+            border-radius: 0;
+            box-shadow: none;
         }
         .chat-header {
             background: #1976d2;
             color: #fff;
             padding: 18px;
-            border-radius: 10px 10px 0 0;
             font-size: 22px;
             font-weight: bold;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 10px;
+            border-radius: 0;
+            justify-content: space-between;
         }
         .chat-header .icon {
             font-size: 26px;
+        }
+        .chat-header .user-info {
+            font-size: 15px;
+            color: #fff;
+            font-weight: normal;
+        }
+        .chat-header .admin-link {
+            color: #fff;
+            background: #388e3c;
+            border-radius: 6px;
+            padding: 4px 12px;
+            margin-left: 10px;
+            text-decoration: none;
+            font-size: 15px;
+        }
+        .chat-header .logout-link {
+            color: #fff;
+            background: #d32f2f;
+            border-radius: 6px;
+            padding: 4px 12px;
+            margin-left: 10px;
+            text-decoration: none;
+            font-size: 15px;
         }
         .chat-messages {
             flex: 1;
@@ -64,7 +101,7 @@
             border-top: 1px solid #eee;
             padding: 14px;
             background: #fafafa;
-            border-radius: 0 0 10px 10px;
+            border-radius: 0;
         }
         .chat-input {
             flex: 1;
@@ -88,59 +125,107 @@
         .chat-send-btn:active {
             background: #1565c0;
         }
-        /* Markdown style for bot message */
-        .bot strong { color: #1976d2; }
-        .bot ul { margin: 8px 0 8px 24px; }
-        .bot li { margin-bottom: 6px; }
-        .bot .lesson-title {
+        .auth-links {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .auth-btns {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .auth-btn {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 17px;
             font-weight: bold;
-            color: #1565c0;
-            margin-bottom: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+            display: inline-block;
         }
-        .bot .lesson-desc {
-            margin-bottom: 8px;
+        .auth-btn:hover {
+            background: #1565c0;
+            color: #fff;
+            text-decoration: none;
         }
-        .bot .lesson-list {
-            margin: 8px 0 8px 0;
-            padding: 0;
-            list-style: none;
+        @media (max-width: 900px) {
+            .chat-container {
+                max-width: 100vw;
+                border-radius: 0;
+            }
         }
-        .bot .lesson-list li {
-            margin-bottom: 10px;
-            background: #e3f2fd;
-            border-radius: 8px;
-            padding: 8px 12px;
-        }
-        /* Highlight code block */
-        .bot pre, .bot code {
-            font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-            background: #23272e;
-            color: #e3eafc;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin: 10px 0;
-            font-size: 15px;
-            overflow-x: auto;
-            display: block;
-        }
-        .bot code {
-            padding: 2px 6px;
-            background: #23272e;
-            color: #e3eafc;
-            border-radius: 4px;
-            display: inline;
-        }
-        .bot pre code {
-            padding: 0;
-            background: none;
-            color: inherit;
-            border-radius: 0;
+        @media (max-width: 600px) {
+            .chat-header, .chat-messages, .chat-input-area {
+                padding-left: 4px;
+                padding-right: 4px;
+            }
+            .chat-header {
+                font-size: 17px;
+                padding: 12px 4px;
+            }
+            .chat-header .icon {
+                font-size: 20px;
+            }
+            .chat-header .user-info {
+                font-size: 13px;
+            }
+            .chat-messages {
+                padding-top: 6px;
+                padding-bottom: 6px;
+                gap: 8px;
+            }
+            .message {
+                font-size: 14px;
+                padding: 8px 10px;
+                border-radius: 12px;
+                max-width: 98%;
+            }
+            .chat-input {
+                font-size: 14px;
+                padding: 8px;
+            }
+            .chat-send-btn {
+                font-size: 14px;
+                padding: 0 12px;
+                border-radius: 14px;
+            }
+            .auth-btns {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .auth-btn {
+                width: 100%;
+                font-size: 15px;
+                padding: 12px 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-header"><span class="icon">🤖</span> ChatBot Tin học 9</div>
+        <div class="chat-header">
+            <span><span class="icon">🤖</span> ChatBot Tin học 9</span>
+            <span class="user-info">
+                {% if user %}
+                    Xin chào, <b>{{ user }}</b>
+                    {% if is_admin %}
+                        <a class="admin-link" href="{{ url_for('admin_dashboard') }}">Quản trị</a>
+                    {% endif %}
+                    <a class="logout-link" href="{{ url_for('logout') }}">Đăng xuất</a>
+                {% else %}
+                    <div class="auth-btns">
+                        <a href="{{ url_for('login') }}" class="auth-btn">Đăng nhập</a>
+                        <a href="{{ url_for('register') }}" class="auth-btn" style="background:#388e3c;">Đăng ký</a>
+                    </div>
+                {% endif %}
+            </span>
+        </div>
         <div class="chat-messages" id="chat-messages">
             <div class="message bot">
                 <strong>Xin chào!</strong> Hãy đặt câu hỏi về Tin học 9.<br>
@@ -195,6 +280,26 @@
             const userMsg = chatInput.value.trim();
             if (!userMsg) return;
             appendMessage(userMsg, 'user');
+            chatInput.value = '';
+            appendMessage('Đang trả lời...', 'bot');
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg })
+                });
+                const data = await res.json();
+                // Xóa "Đang trả lời..."
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage(data.reply, 'bot');
+            } catch {
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage('Có lỗi xảy ra, vui lòng thử lại.', 'bot');
+            }
+        });
+    </script>
+</body>
+</html>
             chatInput.value = '';
             appendMessage('Đang trả lời...', 'bot');
             try {

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm chủ đề - ChatBot Tin học 9</title>
+    <style>
+        body { background: #f6f6f6; font-family: Arial, sans-serif; margin: 0; }
+        .form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 28px 28px 18px 28px;
+        }
+        .form-title {
+            font-size: 20px;
+            color: #1976d2;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+        label { display: block; margin-bottom: 7px; color: #333; font-size: 15px; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border: 1px solid #bdbdbd;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+        textarea { min-height: 60px; }
+        .form-btn {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .form-btn:hover { background: #1565c0; }
+        .flash { color: #d32f2f; margin-bottom: 12px; font-size: 15px; }
+        .back-link { color: #1976d2; text-decoration: none; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-title">Thêm chủ đề mới</div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="key">Key (ví dụ: chu_de_7)</label>
+            <input type="text" id="key" name="key" required>
+            <label for="ten">Tên chủ đề</label>
+            <input type="text" id="ten" name="ten" required>
+            <label for="vidu">Ví dụ (mỗi dòng 1 ví dụ)</label>
+            <textarea id="vidu" name="vidu"></textarea>
+            <label for="noidung_1">Nội dung 1</label>
+            <textarea id="noidung_1" name="noidung_1"></textarea>
+            <label for="noidung_2">Nội dung 2</label>
+            <textarea id="noidung_2" name="noidung_2"></textarea>
+            <label for="noidung_3">Nội dung 3</label>
+            <textarea id="noidung_3" name="noidung_3"></textarea>
+            <label for="noidung_4">Nội dung 4</label>
+            <textarea id="noidung_4" name="noidung_4"></textarea>
+            <label for="noidung_5">Nội dung 5</label>
+            <textarea id="noidung_5" name="noidung_5"></textarea>
+            <button class="form-btn" type="submit">Thêm chủ đề</button>
+        </form>
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">← Quay lại quản trị</a>
+    </div>
+</body>
+</html>

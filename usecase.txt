@@ -1,0 +1,42 @@
+Use Case Diagram (text mô tả):
+
+Actors:
+- Người dùng (User)
+- Quản trị viên (Admin)
+
+Use Cases:
+1. Đặt câu hỏi cho ChatBot
+   - User nhập câu hỏi trên giao diện web
+   - Hệ thống gửi câu hỏi tới backend Flask
+   - Backend gửi prompt + dữ liệu bài học tới Gemini API
+   - Nhận câu trả lời và hiển thị trên giao diện chat
+
+2. Quản lý dữ liệu bài học
+   - Admin cập nhật file informatics9.json (thêm/sửa/xóa bài học)
+   - Hệ thống sử dụng dữ liệu mới cho các câu hỏi tiếp theo
+
+3. Quản lý phụ đề video YouTube
+   - Admin nhập link video, hệ thống lấy phụ đề và lưu vào all_youtube_subtitles.json
+
+4. Scan PDF sang text
+   - Admin upload file PDF
+   - Hệ thống chuyển PDF sang text (OCR hoặc extract text)
+   - Lưu kết quả vào file txt để xử lý tiếp
+
+5. Tóm tắt nội dung bài học
+   - Admin chạy script tóm tắt file JSON bài học
+   - Hệ thống tạo file tóm tắt mới
+
+6. Trích xuất nội dung từ YouTube
+   - Admin nhập link video
+   - Hệ thống lấy phụ đề, lưu vào JSON
+
+Mối quan hệ:
+- User sử dụng: Đặt câu hỏi cho ChatBot
+- Admin sử dụng: Quản lý dữ liệu bài học, Quản lý phụ đề video, Scan PDF, Tóm tắt nội dung, Trích xuất nội dung YouTube
+
+Ghi chú: 
+- Các usecase trên đều sử dụng chung dữ liệu bài học (informatics9.json) hoặc dữ liệu phụ đề (all_youtube_subtitles.json)
+- Hệ thống có thể mở rộng thêm các chức năng quản trị khác.
+
+Bạn có thể vẽ lại sơ đồ này bằng draw.io hoặc các công cụ UML với các actor và usecase tương ứng.

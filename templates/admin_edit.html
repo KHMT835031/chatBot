@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sửa chủ đề - ChatBot Tin học 9</title>
+    <style>
+        body { background: #f6f6f6; font-family: Arial, sans-serif; margin: 0; }
+        .form-container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            padding: 28px 28px 18px 28px;
+        }
+        .form-title {
+            font-size: 20px;
+            color: #1976d2;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+        label { display: block; margin-bottom: 7px; color: #333; font-size: 15px; }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 16px;
+            border: 1px solid #bdbdbd;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+        textarea { min-height: 60px; }
+        .form-btn {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .form-btn:hover { background: #1565c0; }
+        .flash { color: #d32f2f; margin-bottom: 12px; font-size: 15px; }
+        .back-link { color: #1976d2; text-decoration: none; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-title">Sửa chủ đề: {{ key }}</div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="ten">Tên chủ đề</label>
+            <input type="text" id="ten" name="ten" value="{{ lesson.ten }}" required>
+            <label for="vidu">Ví dụ (mỗi dòng 1 ví dụ)</label>
+            <textarea id="vidu" name="vidu">{% for v in lesson.vidu %}{{ v }}{% if not loop.last %}\n{% endif %}{% endfor %}</textarea>
+            {% for i in range(1, 6) %}
+                <label for="noidung_{{i}}">Nội dung {{i}}</label>
+                <textarea id="noidung_{{i}}" name="noidung_{{i}}">{{ lesson['noidung_' ~ i] if 'noidung_' ~ i in lesson else '' }}</textarea>
+            {% endfor %}
+            <button class="form-btn" type="submit">Lưu thay đổi</button>
+        </form>
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">← Quay lại quản trị</a>
+    </div>
+</body>
+</html>
