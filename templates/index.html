@@ -38,8 +38,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            border-radius: 0;
-            justify-content: space-between;
         }
         .chat-header .icon {
             font-size: 26px;
@@ -203,6 +201,16 @@
                 width: 100%;
                 font-size: 15px;
                 padding: 12px 0;
+            }
+        }
+        @media (max-width: 600px) {
+            .chat-header, .chat-messages, .chat-input-area {
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+            .chat-messages {
+                padding-top: 10px;
+                padding-bottom: 10px;
             }
         }
     </style>
