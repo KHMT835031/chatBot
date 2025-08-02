@@ -3,268 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ChatBot Tin học 9</title>
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f6f6f6;
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
-        }
-        .chat-container {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            background: #fff;
-            display: flex;
-            flex-direction: column;
-            border-radius: 0;
-            box-shadow: none;
-        }
-        .chat-header {
-            background: #1976d2;
-            color: #fff;
-            padding: 18px;
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-radius: 0;
-            justify-content: space-between;
-        }
-        .chat-header .icon {
-            font-size: 26px;
-        }
-        .chat-header .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .chat-header .header-right {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .auth-btns {
-            display: flex;
-            gap: 12px;
-        }
-        .auth-btn {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 26px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-            box-shadow: 0 2px 8px rgba(25,118,210,0.08);
-            display: inline-block;
-        }
-        .auth-btn.register {
-            background: #388e3c;
-        }
-        .auth-btn:hover, .auth-btn.register:hover {
-            background: #1565c0;
-            color: #fff;
-            text-decoration: none;
-        }
-        .auth-btn.register:hover {
-            background: #2e7031;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px;
-            color: #fff;
-            font-weight: normal;
-        }
-        .chat-header .admin-link {
-            color: #fff;
-            background: #388e3c;
-            border-radius: 6px;
-            padding: 4px 12px;
-            margin-left: 0;
-            text-decoration: none;
-            font-size: 15px;
-        }
-        .chat-header .logout-link {
-            color: #fff;
-            background: #d32f2f;
-            border-radius: 6px;
-            padding: 4px 12px;
-            margin-left: 0;
-            text-decoration: none;
-            font-size: 15px;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 18px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #f9fbfd;
-        }
-        .message {
-            max-width: 85%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            font-size: 16px;
-            line-height: 1.7;
-            word-break: break-word;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-        }
-        .user {
-            align-self: flex-end;
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-        .bot {
-            align-self: flex-start;
-            background: #f1f1f1;
-            color: #222;
-            border-left: 4px solid #1976d2;
-        }
-        .chat-input-area {
-            display: flex;
-            border-top: 1px solid #eee;
-            padding: 14px;
-            background: #fafafa;
-            border-radius: 0;
-        }
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 18px;
-            font-size: 16px;
-            outline: none;
-        }
-        .chat-send-btn {
-            margin-left: 10px;
-            padding: 0 22px;
-            border: none;
-            border-radius: 18px;
-            background: #1976d2;
-            color: #fff;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .chat-send-btn:active {
-            background: #1565c0;
-        }
-        .auth-links {
-            margin-top: 10px;
-            text-align: center;
-        }
-        .auth-btns {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 12px;
-        }
-        .auth-btn {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 28px;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.2s;
-            box-shadow: 0 2px 8px rgba(25,118,210,0.08);
-            display: inline-block;
-        }
-        .auth-btn:hover {
-            background: #1565c0;
-            color: #fff;
-            text-decoration: none;
-        }
-        @media (max-width: 900px) {
-            .chat-container {
-                max-width: 100vw;
-                border-radius: 0;
-            }
-        }
-        @media (max-width: 600px) {
-            .chat-header, .chat-messages, .chat-input-area {
-                padding-left: 4px;
-                padding-right: 4px;
-            }
-            .chat-header {
-                font-size: 17px;
-                padding: 12px 4px;
-            }
-            .chat-header .icon {
-                font-size: 20px;
-            }
-            .chat-header .header-left {
-                font-size: 15px;
-            }
-            .chat-header .header-right {
-                gap: 6px;
-            }
-            .auth-btns {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .auth-btn {
-                width: 100%;
-                font-size: 15px;
-                padding: 10px 0;
-            }
-            .user-info {
-                font-size: 13px;
-            }
-            .chat-messages {
-                padding-top: 6px;
-                padding-bottom: 6px;
-                gap: 8px;
-            }
-            .message {
-                font-size: 14px;
-                padding: 8px 10px;
-                border-radius: 12px;
-                max-width: 98%;
-            }
-            .chat-input {
-                font-size: 14px;
-                padding: 8px;
-            }
-            .chat-send-btn {
-                font-size: 14px;
-                padding: 0 12px;
-                border-radius: 14px;
-            }
-        }
-        @media (max-width: 600px) {
-            .chat-header, .chat-messages, .chat-input-area {
-                padding-left: 8px;
-                padding-right: 8px;
-            }
-            .chat-messages {
-                padding-top: 10px;
-                padding-bottom: 10px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="chat-container">
@@ -289,25 +28,42 @@
                 {% endif %}
             </div>
         </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message bot">
-                <strong>Xin chào!</strong> Hãy đặt câu hỏi về Tin học 9.<br>
-                <span style="font-size:13px;color:#888;">(Ví dụ: "Hàm IF lồng nhau là gì?", "Cách dùng hàm AND trong Excel?")</span>
+        <div class="chat-main">
+            {% if user %}
+            <div class="chat-sessions-panel" id="chat-sessions-panel">
+                <div class="sessions-header">
+                    Đoạn chat của bạn
+                </div>
+                <div class="sessions-list" id="sessions-list"></div>
+                <button class="add-session-btn" id="add-session-btn">+ Tạo đoạn chat mới</button>
+            </div>
+            {% endif %}
+            <div class="chat-content-panel">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot">
+                        <strong>Xin chào!</strong> Hãy đặt câu hỏi về Tin học 9.<br>
+                        <span style="font-size:13px;color:#888;">(Ví dụ: "Hàm IF lồng nhau là gì?", "Cách dùng hàm AND trong Excel?")</span>
+                    </div>
+                </div>
+                <form class="chat-input-area" id="chat-form" autocomplete="off">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Nhập câu hỏi..." autofocus required />
+                    <button type="submit" class="chat-send-btn">Gửi</button>
+                </form>
             </div>
         </div>
-        <form class="chat-input-area" id="chat-form" autocomplete="off">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Nhập câu hỏi..." autofocus required />
-            <button type="submit" class="chat-send-btn">Gửi</button>
-        </form>
     </div>
     <script>
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const chatMessages = document.getElementById('chat-messages');
+        const sessionsList = document.getElementById('sessions-list');
+        const addSessionBtn = document.getElementById('add-session-btn');
+        let currentSessionId = null;
+        let sessions = [];
 
         // Markdown rendering for bot message (bold, list, linebreak, code block)
         function renderMarkdown(text) {
-            // Code block (```lang ... ```
+            // Code block (```lang ... ```)
             text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
                 return `<pre><code class="lang-${lang || ''}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
             });
@@ -321,8 +77,20 @@
             text = text.replace(/\n\s*\d+\. (.+)/g, '\n<li>$1</li>');
             // Wrap list items with <ul>
             text = text.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul class="lesson-list">$1</ul>');
-            // Line breaks
-            
+            // Làm nổi bật các cụm từ quan trọng
+            text = text.replace(/(Lưu ý:|Quan trọng:|Chú ý:)(.*?)(?=\n|$)/gi, function(_, prefix, content) {
+                return `<span class="highlight-important">${prefix}${content}</span>`;
+            });
+            // Làm nổi bật các dòng bắt đầu bằng Ví dụ:, Cú pháp:, Để đếm, Bạn có muốn, Chúng ta có thể, Hoặc nếu bạn quan tâm
+            text = text.replace(/(Ví dụ:|Cú pháp:|Để đếm|Bạn có muốn|Chúng ta có thể|Hoặc nếu bạn quan tâm)(.*?)(?=\n|$)/gi, function(_, prefix, content) {
+                return `<span class="highlight-example">${prefix}${content}</span>`;
+            });
+            // Làm nổi bật mọi công thức bắt đầu bằng dấu = ở đầu dòng hoặc sau khoảng trắng
+            text = text.replace(/(^|\s)(=\S[^\s\n]*)/gm, function(_, space, formula) {
+                return `${space}<span class="highlight-formula">${formula}</span>`;
+            });
+            // Làm nổi bật tên hàm Excel
+            text = text.replace(/\b(COUNT|COUNTA|COUNTBLANK|COUNTIF|COUNTIFS|SUM|AVERAGE|MIN|MAX|IF)\b/g, '<span class="highlight-func">$1</span>');
             return text;
         }
 
@@ -338,6 +106,124 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        async function fetchSessions() {
+            const res = await fetch('/session/list');
+            const data = await res.json();
+            sessions = data.sessions;
+            renderSessions();
+        }
+
+        async function loadChatHistory(sessionId) {
+            chatMessages.innerHTML = `<div class="message bot"><strong>Đang tải lịch sử chat...</strong></div>`;
+            const res = await fetch('/session/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+            const data = await res.json();
+            chatMessages.innerHTML = '';
+            if (data.messages && data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    appendMessage(msg.message, msg.sender === 'user' ? 'user' : 'bot');
+                });
+            } else {
+                chatMessages.innerHTML = `<div class="message bot"><strong>Chưa có tin nhắn nào trong đoạn chat này.</strong></div>`;
+            }
+        }
+
+        function renderSessions() {
+            sessionsList.innerHTML = '';
+            sessions.forEach(session => {
+                const div = document.createElement('div');
+                div.className = 'session-item';
+                div.textContent = session.name;
+                if (session.id === currentSessionId) {
+                    div.style.background = '#e3f2fd';
+                }
+                div.onclick = () => {
+                    currentSessionId = session.id;
+                    renderSessions();
+                    loadChatHistory(currentSessionId);
+                };
+                // Nút đổi tên
+                const renameBtn = document.createElement('button');
+                renameBtn.textContent = '✏️';
+                renameBtn.style.marginLeft = '8px';
+                renameBtn.style.border = 'none';
+                renameBtn.style.background = 'transparent';
+                renameBtn.style.cursor = 'pointer';
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const newName = prompt('Nhập tên mới cho đoạn chat:', session.name);
+                    if (newName && newName.trim()) {
+                        renameSession(session.id, newName.trim());
+                    }
+                };
+                div.appendChild(renameBtn);
+                // Nút xóa
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.style.marginLeft = '4px';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.background = 'transparent';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm('Bạn chắc chắn muốn xóa đoạn chat này?')) {
+                        deleteSession(session.id);
+                    }
+                };
+                div.appendChild(deleteBtn);
+                sessionsList.appendChild(div);
+            });
+        }
+
+        async function createSession() {
+            const name = prompt('Nhập tên cho đoạn chat mới:', 'Chưa đặt tên');
+            const res = await fetch('/session/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name || 'Chưa đặt tên' })
+            });
+            const data = await res.json();
+            currentSessionId = data.session_id;
+            await fetchSessions();
+            renderSessions();
+            chatMessages.innerHTML = `<div class="message bot"><strong>Đã tạo đoạn chat mới!</strong></div>`;
+        }
+
+        async function renameSession(sessionId, newName) {
+            await fetch('/session/rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId, name: newName })
+            });
+            await fetchSessions();
+            renderSessions();
+        }
+
+        async function deleteSession(sessionId) {
+            await fetch('/session/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+            if (currentSessionId === sessionId) {
+                currentSessionId = null;
+                chatMessages.innerHTML = `<div class="message bot"><strong>Đã xóa đoạn chat!</strong></div>`;
+            }
+            await fetchSessions();
+            renderSessions();
+        }
+
+        if (addSessionBtn) {
+            addSessionBtn.onclick = createSession;
+        }
+
+        if (sessionsList) {
+            fetchSessions();
+        }
+
         chatForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const userMsg = chatInput.value.trim();
@@ -349,7 +235,7 @@
                 const res = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userMsg })
+                    body: JSON.stringify({ message: userMsg, session_id: currentSessionId })
                 });
                 const data = await res.json();
                 // Xóa "Đang trả lời..."
@@ -360,6 +246,7 @@
                 appendMessage('Có lỗi xảy ra, vui lòng thử lại.', 'bot');
             }
         });
+        
     </script>
 </body>
 </html>

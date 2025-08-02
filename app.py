@@ -30,6 +30,36 @@ def init_db():
     c.execute("SELECT * FROM users WHERE username=?", ("admin",))
     if not c.fetchone():
         c.execute("INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)", ("admin", "admin123", 1))
+    # Bảng chat_sessions: mỗi session tương ứng 1 đoạn chat có thể đặt tên
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS chat_sessions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            name TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    ''')
+    # Bảng chat_messages: lưu từng câu hỏi-trả lời
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id INTEGER,
+            sender TEXT,
+            message TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(session_id) REFERENCES chat_sessions(id)
+        )
+    ''')
+    # Bảng chat_stats: lưu thống kê chat
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS chat_stats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            question TEXT,
+            matched_keys TEXT
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -156,31 +186,34 @@ def find_lesson_by_content(user_msg, lessons):
     return matched_lessons
 
 def log_chat_stat(username, question, matched_keys):
-    # username: None nếu chưa đăng nhập
-    if not os.path.exists(STATS_PATH):
-        stats = []
-    else:
-        with open(STATS_PATH, encoding="utf-8") as f:
-            try:
-                stats = json.load(f)
-            except Exception:
-                stats = []
-    stats.append({
-        "username": username or "guest",
-        "question": question,
-        "matched_keys": matched_keys,
-    })
-    with open(STATS_PATH, "w", encoding="utf-8") as f:
-        json.dump(stats, f, ensure_ascii=False, indent=2)
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO chat_stats (username, question, matched_keys) VALUES (?, ?, ?)",
+        (username or "guest", question, json.dumps(matched_keys, ensure_ascii=False))
+    )
+    conn.commit()
+    conn.close()
 
 def get_stats():
-    if not os.path.exists(STATS_PATH):
-        return []
-    with open(STATS_PATH, encoding="utf-8") as f:
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT username, question, matched_keys FROM chat_stats")
+    rows = c.fetchall()
+    conn.close()
+    stats = []
+    for row in rows:
+        username, question, matched_keys = row
         try:
-            return json.load(f)
+            matched_keys = json.loads(matched_keys)
         except Exception:
-            return []
+            matched_keys = []
+        stats.append({
+            "username": username,
+            "question": question,
+            "matched_keys": matched_keys,
+        })
+    return stats
 
 @app.route("/")
 def index():
@@ -224,20 +257,37 @@ def logout():
     flash("Đã đăng xuất.")
     return redirect(url_for("login"))
 
+def save_message(session_id, sender, message):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("INSERT INTO chat_messages (session_id, sender, message) VALUES (?, ?, ?)", (session_id, sender, message))
+    conn.commit()
+    conn.close()
+
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_msg = request.json.get("message", "").lower()
+    user_msg = request.json.get("message", "").strip()
+    session_id = request.json.get("session_id")
+
+    if not user_msg:
+        return jsonify({"reply": "❌ Câu hỏi không hợp lệ."}), 400
+
+    user_msg_lower = user_msg.lower()
     lessons = load_lessons()
-    matched_lessons = find_lesson_by_content(user_msg, lessons)
+    matched_lessons = find_lesson_by_content(user_msg_lower, lessons)
+
     matched_keys = []
     for bai, _ in matched_lessons:
-        # Tìm key của chủ đề
         for key, value in lessons.items():
             if value is bai:
                 matched_keys.append(key)
                 break
-    log_chat_stat(session.get("user"), user_msg, matched_keys)
-    # ...existing code for matched_lessons and reply...
+
+    log_chat_stat(session.get("user"), user_msg_lower, matched_keys)
+
+    # Lưu tin nhắn của người dùng nếu đã đăng nhập và có session_id
+    if session.get("user") and session_id:
+        save_message(session_id, "user", user_msg)
 
     if matched_lessons:
         related_content = "\n".join(content for _, content in matched_lessons)
@@ -251,19 +301,24 @@ def chat():
             "- Không sử dụng màu nền, biểu tượng, hoặc các ký hiệu đặc biệt ngoài markdown cơ bản."
         )
         reply = gemini_generate_content(prompt)
-        return jsonify({"reply": reply})
+    else:
+        suggest_prompt = (
+            "Bạn là trợ lý học tập Tin học 9. Dưới đây là các nội dung yêu cầu cần đạt của chương trình Tin học 9:\n"
+            + "\n".join(
+                bai[k] for bai in lessons.values() for k in bai if k.startswith("noidung")
+            ) +
+            f"\n\nCâu hỏi của người dùng: \"{user_msg}\"\n"
+            "Yêu cầu:\n"
+            "- Nếu không có nội dung nào liên quan để trả lời, hãy đối thoại thân thiện với người dùng và gợi ý một hoặc một vài nội dung/chủ đề trong chương trình Tin học 9 mà bạn nghĩ người dùng có thể quan tâm hoặc nên hỏi tiếp."
+        )
+        reply = gemini_generate_content(suggest_prompt)
 
-    suggest_prompt = (
-        "Bạn là trợ lý học tập Tin học 9. Dưới đây là các nội dung yêu cầu cần đạt của chương trình Tin học 9:\n"
-        + "\n".join(
-            bai[k] for bai in lessons.values() for k in bai if k.startswith("noidung")
-        ) +
-        f"\n\nCâu hỏi của người dùng: \"{user_msg}\"\n"
-        "Yêu cầu:\n"
-        "- Nếu không có nội dung nào liên quan để trả lời, hãy đối thoại thân thiện với người dùng và gợi ý một hoặc một vài nội dung/chủ đề trong chương trình Tin học 9 mà bạn nghĩ người dùng có thể quan tâm hoặc nên hỏi tiếp."
-    )
-    reply = gemini_generate_content(suggest_prompt)
+    # Lưu trả lời của bot
+    if session.get("user") and session_id:
+        save_message(session_id, "bot", reply)
+
     return jsonify({"reply": reply})
+
 
 @app.route("/admin")
 @admin_required
@@ -455,6 +510,73 @@ def admin_stats():
         lessons=lessons,
         total=len(stats)
     )
+
+@app.route("/session/create", methods=["POST"])
+@login_required
+def create_session():
+    name = request.json.get("name", "Chưa đặt tên")
+    user = get_user(session["user"])
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("INSERT INTO chat_sessions (user_id, name) VALUES (?, ?)", (user[0], name))
+    conn.commit()
+    new_id = c.lastrowid
+    conn.close()
+    return jsonify({"session_id": new_id})
+
+@app.route("/session/rename", methods=["POST"])
+@login_required
+def rename_session():
+    session_id = request.json.get("session_id")
+    new_name = request.json.get("name")
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("UPDATE chat_sessions SET name=? WHERE id=? AND user_id=(SELECT id FROM users WHERE username=?)",
+              (new_name, session_id, session["user"]))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "ok"})
+
+@app.route("/session/delete", methods=["POST"])
+@login_required
+def delete_session():
+    session_id = request.json.get("session_id")
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("DELETE FROM chat_messages WHERE session_id=?", (session_id,))
+    c.execute("DELETE FROM chat_sessions WHERE id=? AND user_id=(SELECT id FROM users WHERE username=?)",
+              (session_id, session["user"]))
+    conn.commit()
+    conn.close()
+    return jsonify({"status": "deleted"})
+
+@app.route("/session/list", methods=["GET"])
+@login_required
+def list_sessions():
+    user = get_user(session["user"])
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT id, name, created_at FROM chat_sessions WHERE user_id=? ORDER BY created_at DESC", (user[0],))
+    sessions = [
+        {"id": row[0], "name": row[1], "created_at": row[2]} for row in c.fetchall()
+    ]
+    conn.close()
+    return jsonify({"sessions": sessions})
+
+@app.route("/session/messages", methods=["POST"])
+@login_required
+def get_session_messages():
+    session_id = request.json.get("session_id")
+    if not session_id:
+        return jsonify({"error": "Missing session_id"}), 400
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT sender, message, timestamp FROM chat_messages WHERE session_id=? ORDER BY timestamp ASC", (session_id,))
+    messages = [
+        {"sender": row[0], "message": row[1], "timestamp": row[2]} for row in c.fetchall()
+    ]
+    conn.close()
+    return jsonify({"messages": messages})
 
 if __name__ == "__main__":
     app.run(debug=True)

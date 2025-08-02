@@ -3,34 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Log lỗi Gemini API - ChatBot Tin học 9</title>
-    <style>
-        body { background: #f6f6f6; font-family: Arial, sans-serif; margin: 0; }
-        .logs-container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            padding: 28px 28px 18px 28px;
-        }
-        .logs-title {
-            font-size: 20px;
-            color: #d32f2f;
-            font-weight: bold;
-            margin-bottom: 18px;
-        }
-        .logs-list {
-            background: #23272e;
-            color: #e3eafc;
-            border-radius: 8px;
-            padding: 16px;
-            font-size: 15px;
-            max-height: 500px;
-            overflow-y: auto;
-            white-space: pre-line;
-        }
-        .back-link { color: #1976d2; text-decoration: none; font-size: 15px; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="logs-container">

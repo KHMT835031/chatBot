@@ -3,45 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Cấu hình hệ thống - ChatBot Tin học 9</title>
-    <style>
-        body { background: #f6f6f6; font-family: Arial, sans-serif; margin: 0; }
-        .config-container {
-            max-width: 420px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-            padding: 28px 28px 18px 28px;
-        }
-        .config-title {
-            font-size: 20px;
-            color: #1976d2;
-            font-weight: bold;
-            margin-bottom: 18px;
-        }
-        label { display: block; margin-bottom: 7px; color: #333; font-size: 15px; }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px 12px;
-            margin-bottom: 16px;
-            border: 1px solid #bdbdbd;
-            border-radius: 7px;
-            font-size: 15px;
-        }
-        .form-btn {
-            background: #1976d2;
-            color: #fff;
-            border: none;
-            border-radius: 7px;
-            padding: 10px 22px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .form-btn:hover { background: #1565c0; }
-        .flash { color: #d32f2f; margin-bottom: 12px; font-size: 15px; }
-        .back-link { color: #1976d2; text-decoration: none; font-size: 15px; }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <div class="config-container">
