@@ -74,6 +74,11 @@ def init_db():
             question TEXT,
             matched_keys TEXT
         )''')
+        # Thêm bảng cấu hình hệ thống
+        c.execute('''CREATE TABLE IF NOT EXISTS system_config (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )''')
     else:
         # SQLite syntax
         c.execute('''CREATE TABLE IF NOT EXISTS users (
@@ -107,6 +112,11 @@ def init_db():
             username TEXT,
             question TEXT,
             matched_keys TEXT
+        )''')
+        # Thêm bảng cấu hình hệ thống cho SQLite
+        c.execute('''CREATE TABLE IF NOT EXISTS system_config (
+            key TEXT PRIMARY KEY,
+            value TEXT
         )''')
 
     # Tạo tài khoản admin mẫu nếu chưa có
@@ -193,9 +203,15 @@ def save_lessons(lessons):
         json.dump(lessons, f, ensure_ascii=False, indent=2)
 
 def load_config():
-    if not os.path.exists(CONFIG_PATH):
-        # Tạo file config mặc định từ biến môi trường
-        config = {
+    conn, p = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT key, value FROM system_config")
+    rows = c.fetchall()
+    conn.close()
+
+    if not rows:
+        # Nếu chưa có trong DB, trả về config mặc định
+        return {
             "API_KEY": API_KEY, 
             "MAX_TOKEN": MAX_TOKEN_ENV,
             "OPENROUTER_API_KEY": OPENROUTER_API_KEY,
@@ -203,15 +219,25 @@ def load_config():
             "CURRENT_GRADE": "Tin học 9",
             "DATA_FILE": "informatics9.json"
         }
-        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-            json.dump(config, f, ensure_ascii=False, indent=2)
-        return config
-    with open(CONFIG_PATH, encoding="utf-8") as f:
-        return json.load(f)
+    
+    config = {row[0]: row[1] for row in rows}
+    # Chuyển MAX_TOKEN sang số nguyên
+    if "MAX_TOKEN" in config:
+        config["MAX_TOKEN"] = int(config["MAX_TOKEN"])
+    return config
 
 def save_config(config):
-    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-        json.dump(config, f, ensure_ascii=False, indent=2)
+    conn, p = get_db_connection()
+    c = conn.cursor()
+    for key, value in config.items():
+        if DATABASE_URL:
+            # Postgres: UPSERT style
+            c.execute(f"INSERT INTO system_config (key, value) VALUES ({p}, {p}) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value", (key, str(value)))
+        else:
+            # SQLite: UPSERT style
+            c.execute("INSERT OR REPLACE INTO system_config (key, value) VALUES (?, ?)", (key, str(value)))
+    conn.commit()
+    conn.close()
 
 def get_current_data_path():
     config = load_config()
