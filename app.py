@@ -5,6 +5,7 @@ import sqlite3
 import psycopg2
 from psycopg2 import extras
 import os
+from datetime import timedelta
 from dotenv import load_dotenv
 from functools import wraps
 
@@ -24,6 +25,8 @@ def get_gemini_url(api_key):
 
 app = Flask(__name__)
 app.secret_key = app_secret_key
+# Cấu hình thời gian tự động đăng xuất (ví dụ: 30 phút)
+app.permanent_session_lifetime = timedelta(minutes=30)
 
 DB_PATH = "users.db"
 DATA_PATH = "informatics9.json"
@@ -385,6 +388,7 @@ def login():
         password = request.form["password"]
         user = get_user(username)
         if user and user["password"] == password:
+            session.permanent = True  # Kích hoạt thời gian hết hạn session đã cấu hình
             session["user"] = user["username"]
             session["is_admin"] = bool(user["is_admin"])
             class_info = f" ({user['class_name']})" if user.get("class_name") else ""
