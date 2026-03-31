@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>ChatBot {{ get_current_grade_name() }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-left">
+                <span class="icon">🤖</span> ChatBot {{ get_current_grade_name() }}
+            </div>
+            <div class="header-right">
+                {% if user %}
+                    <div class="user-info">
+                        Xin chào, <b>{{ user }}</b>
+                        {% if is_admin %}
+                            <a class="admin-link" href="{{ url_for('admin_dashboard') }}">Quản trị</a>
+                        {% endif %}
+                        <a class="logout-link" href="{{ url_for('logout') }}">Đăng xuất</a>
+                    </div>
+                {% else %}
+                    <div class="auth-btns">
+                        <a href="{{ url_for('login') }}" class="auth-btn">Đăng nhập</a>
+                        <a href="{{ url_for('register') }}" class="auth-btn register">Đăng ký</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="chat-main">
+            {% if user %}
+            <div class="chat-sessions-panel" id="chat-sessions-panel">
+                <div class="sessions-header">
+                    Đoạn chat của bạn
+                </div>
+                <div class="sessions-list" id="sessions-list"></div>
+                <button class="add-session-btn" id="add-session-btn">+ Tạo đoạn chat mới</button>
+            </div>
+            {% endif %}
+            <div class="chat-content-panel">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot">
+                        <strong>Xin chào!</strong> Tôi là trợ lý học tập {{ get_current_grade_name() }}.<br>
+                        Hãy đặt câu hỏi về chương trình học nhé.<br>
+                        {% if example_topics %}
+                        <span style="font-size:13px;color:#888;">(Gợi ý: "{{ example_topics[0] }}", "{{ example_topics[1] if example_topics|length > 1 else '...' }}")</span>
+                        {% else %}
+                        <span style="font-size:13px;color:#888;">(Hãy bắt đầu bằng một câu hỏi bất kỳ!)</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <form class="chat-input-area" id="chat-form" autocomplete="off">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Nhập câu hỏi..." autofocus required />
+                    <button type="submit" class="chat-send-btn">Gửi</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const sessionsList = document.getElementById('sessions-list');
+        const addSessionBtn = document.getElementById('add-session-btn');
+        let currentSessionId = null;
+        let sessions = [];
+
+        // Markdown rendering for bot message (bold, list, linebreak, code block)
+        function renderMarkdown(text) {
+            // Code block (```lang ... ```)
+            text = text.replace(/```(\w+)?\n([\s\S]*?)```/g, function(_, lang, code) {
+                return `<pre><code class="lang-${lang || ''}">${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`;
+            });
+            // Inline code
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            // Bold
+            text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            // List item
+            text = text.replace(/\n\s*[\*\-] (.+)/g, '\n<li>$1</li>');
+            // Numbered list
+            text = text.replace(/\n\s*\d+\. (.+)/g, '\n<li>$1</li>');
+            // Wrap list items with <ul>
+            text = text.replace(/(<li>[\s\S]+?<\/li>)/g, '<ul class="lesson-list">$1</ul>');
+            // Làm nổi bật các cụm từ quan trọng
+            text = text.replace(/(Lưu ý:|Quan trọng:|Chú ý:)(.*?)(?=\n|$)/gi, function(_, prefix, content) {
+                return `<span class="highlight-important">${prefix}${content}</span>`;
+            });
+            // Làm nổi bật các dòng bắt đầu bằng Ví dụ:, Cú pháp:, Để đếm, Bạn có muốn, Chúng ta có thể, Hoặc nếu bạn quan tâm
+            text = text.replace(/(Ví dụ:|Cú pháp:|Để đếm|Bạn có muốn|Chúng ta có thể|Hoặc nếu bạn quan tâm)(.*?)(?=\n|$)/gi, function(_, prefix, content) {
+                return `<span class="highlight-example">${prefix}${content}</span>`;
+            });
+            // Làm nổi bật mọi công thức bắt đầu bằng dấu = ở đầu dòng hoặc sau khoảng trắng
+            text = text.replace(/(^|\s)(=\S[^\s\n]*)/gm, function(_, space, formula) {
+                return `${space}<span class="highlight-formula">${formula}</span>`;
+            });
+            // Làm nổi bật tên hàm Excel
+            text = text.replace(/\b(COUNT|COUNTA|COUNTBLANK|COUNTIF|COUNTIFS|SUM|AVERAGE|MIN|MAX|IF)\b/g, '<span class="highlight-func">$1</span>');
+            return text;
+        }
+
+        function appendMessage(text, sender) {
+            const msg = document.createElement('div');
+            msg.className = 'message ' + sender;
+            if (sender === 'bot') {
+                msg.innerHTML = renderMarkdown(text);
+            } else {
+                msg.textContent = text;
+            }
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function fetchSessions() {
+            const res = await fetch('/session/list');
+            const data = await res.json();
+            sessions = data.sessions;
+            renderSessions();
+        }
+
+        async function loadChatHistory(sessionId) {
+            chatMessages.innerHTML = `<div class="message bot"><strong>Đang tải lịch sử chat...</strong></div>`;
+            const res = await fetch('/session/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+            const data = await res.json();
+            chatMessages.innerHTML = '';
+            if (data.messages && data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    appendMessage(msg.message, msg.sender === 'user' ? 'user' : 'bot');
+                });
+            } else {
+                chatMessages.innerHTML = `<div class="message bot"><strong>Chưa có tin nhắn nào trong đoạn chat này.</strong></div>`;
+            }
+        }
+
+        function renderSessions() {
+            sessionsList.innerHTML = '';
+            sessions.forEach(session => {
+                const div = document.createElement('div');
+                div.className = 'session-item';
+                div.textContent = session.name;
+                if (session.id === currentSessionId) {
+                    div.style.background = '#e3f2fd';
+                }
+                div.onclick = () => {
+                    currentSessionId = session.id;
+                    renderSessions();
+                    loadChatHistory(currentSessionId);
+                };
+                // Nút đổi tên
+                const renameBtn = document.createElement('button');
+                renameBtn.textContent = '✏️';
+                renameBtn.style.marginLeft = '8px';
+                renameBtn.style.border = 'none';
+                renameBtn.style.background = 'transparent';
+                renameBtn.style.cursor = 'pointer';
+                renameBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const newName = prompt('Nhập tên mới cho đoạn chat:', session.name);
+                    if (newName && newName.trim()) {
+                        renameSession(session.id, newName.trim());
+                    }
+                };
+                div.appendChild(renameBtn);
+                // Nút xóa
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '🗑️';
+                deleteBtn.style.marginLeft = '4px';
+                deleteBtn.style.border = 'none';
+                deleteBtn.style.background = 'transparent';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm('Bạn chắc chắn muốn xóa đoạn chat này?')) {
+                        deleteSession(session.id);
+                    }
+                };
+                div.appendChild(deleteBtn);
+                sessionsList.appendChild(div);
+            });
+        }
+
+        async function createSession() {
+            const name = prompt('Nhập tên cho đoạn chat mới:', 'Chưa đặt tên');
+            const res = await fetch('/session/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: name || 'Chưa đặt tên' })
+            });
+            const data = await res.json();
+            currentSessionId = data.session_id;
+            await fetchSessions();
+            renderSessions();
+            chatMessages.innerHTML = `<div class="message bot"><strong>Đã tạo đoạn chat mới!</strong></div>`;
+        }
+
+        async function renameSession(sessionId, newName) {
+            await fetch('/session/rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId, name: newName })
+            });
+            await fetchSessions();
+            renderSessions();
+        }
+
+        async function deleteSession(sessionId) {
+            await fetch('/session/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+            if (currentSessionId === sessionId) {
+                currentSessionId = null;
+                chatMessages.innerHTML = `<div class="message bot"><strong>Đã xóa đoạn chat!</strong></div>`;
+            }
+            await fetchSessions();
+            renderSessions();
+        }
+
+        if (addSessionBtn) {
+            addSessionBtn.onclick = createSession;
+        }
+
+        if (sessionsList) {
+            fetchSessions();
+        }
+
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userMsg = chatInput.value.trim();
+            if (!userMsg) return;
+            appendMessage(userMsg, 'user');
+            chatInput.value = '';
+            appendMessage('Đang trả lời...', 'bot');
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMsg, session_id: currentSessionId })
+                });
+                const data = await res.json();
+                // Xóa "Đang trả lời..."
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage(data.reply, 'bot');
+            } catch {
+                chatMessages.removeChild(chatMessages.lastChild);
+                appendMessage('Có lỗi xảy ra, vui lòng thử lại.', 'bot');
+            }
+        });
+        
+    </script>
+</body>
+</html>

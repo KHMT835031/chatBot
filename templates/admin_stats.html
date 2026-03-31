@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thống kê câu hỏi - ChatBot Tin học 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="stats-container">
+        <div class="stats-title">Thống kê câu hỏi (Tổng số lượt hỏi: {{ total }})</div>
+        <h3>1. Số lượng câu hỏi theo người dùng</h3>
+        <table>
+            <tr>
+                <th>Tên đăng nhập</th>
+                <th>Số lượt hỏi</th>
+            </tr>
+            {% for user, count in user_count %}
+            <tr>
+                <td>{{ user }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <h3>2. Chủ đề được hỏi nhiều nhất</h3>
+        <table>
+            <tr>
+                <th>Chủ đề</th>
+                <th>Số lượt hỏi</th>
+            </tr>
+            {% for key, count in topic_count %}
+            <tr>
+                <td>
+                    {{ key }} - {{ lessons[key].ten if key in lessons else '' }}
+                </td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">← Quay lại quản trị</a>
+    </div>
+</body>
+</html>

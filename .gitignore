@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Local databases
+*.db
+users.db
+
+# Logs
+*.log
+error.log
+
+# Static assets (sometimes ignored)
+# static/
+
+# Local config
+config.json
+
+ngoai_le/

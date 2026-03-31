@@ -1,0 +1,28 @@
+{
+  "chu_de_1": {
+    "ten": "Máy tính và cộng đồng",
+    "Thông tin và dữ liệu": "– Phân biệt được thông tin với vật mang tin.\r\n– Nhận biết được sự khác nhau giữa thông tin và dữ liệu.\r\n– Nêu được ví dụ minh hoạ mối quan hệ giữa thông tin và dữ liệu.\r\n– Nêu được ví dụ minh hoạtầm quan trọng của thông tin.\r\n– Giải thích được máy tính là công cụ hiệu quả để thu thập, lưu trữ, xử lí và truyền thông tin. Nêu được\r\nví dụ minh hoạ cụ thể.\r\n– Nêu được các bước cơ bản trong xử lí thông tin.",
+    "Biểu diễn thông tin và lưu trữ dữ liệu trong máy tính": "– Giải thích được có thể biểu diễn thông tinchỉ với hai kí hiệu 0 và 1.\r\n– Biết được bit là đơn vị nhỏ nhất trong lưu trữ thông tin.\r\n– Nêu được tên và độ lớn (xấp xỉ theo hệ thập phân) của các đơn vị cơ bản đo dung lượng thông tin:\r\nByte, KB, MB, GB, quy đổi được một cách gần đúng giữa các đơn vị đo lường này. Ví dụ: 1KB bằng\r\nxấp xỉ 1 ngàn byte, 1 MB xấp xỉ 1 triệu byte, 1 GB xấp xỉ 1 tỉ byte.\r\n– Nêu được sơ lược khả năng lưu trữ của các thiết bị nhớ thông dụng như đĩa cứng, USB, CD, thẻ nhớ, ..."
+  },
+  "chu_de_2": {
+    "ten": "Mạng máy tính và Internet",
+    "Giới thiệu về mạng máy tính và Internet": "– Nêu được khái niệm và lợi ích của mạng máy tính.\r\n– Nêu được ví dụ cụ thể về trường hợp mạng không dây tiện dụng hơn mạng có dây.\r\n– Nêu được các thành phần chủ yếu của một mạng máy tính (máy tính và các thiết bị kết nối) và tên của một vài thiết bị mạng cơ bản như máy tính, cáp nối, Switch, Access Point,...\r\n– Giới thiệu tóm tắt được các đặc điểm và ích lợi chínhcủa Internet."
+  },
+  "chu_de_3": {
+    "ten": "Tổ chức lưu trữ, tìm kiếm và trao đổi thông tin",
+    "World Wide Web, thư điện tử và công cụ tìm kiếm thông tin": "– Trình bày được sơ lược về các khái niệm WWW, website, địa chỉ của website, trình duyệt.\r\n– Xem và nêu được những thông tin chính trên trang web cho trước.\r\n– Khai thác được thông tin trên một số trang web thông dụng như tra từ điển, xem thời tiết, tin thời sự,...\r\n– Nêu được công dụng của máy tìm kiếm.\r\n– Xác định được từ khoá ứng với một mục đích tìm kiếm cho trước.\r\n– Nêu được những ưu, nhược điểm cơ bản của dịch vụ thư điện tử so với các phương thức liên lạc khác.\r\n– Biết cách đăng kí tài khoản thư điện tử, thực hiện được một số thao tác cơ bản: đăng nhập tài khoản\r\nemail, soạn và gửi email, thoát ra."
+  },
+  "chu_de_4": {
+    "ten": "Đạo đức, pháp luật và văn hoá trong môi trường số",
+    "Đề phòng một số tác hại khi tham gia Internet": "– Giới thiệu được sơ lược về một số tác hại và nguy cơ bị hại khi tham gia Internet.Nêu và thực hiện\r\nđược một số biện pháp phòng ngừa cơ bản với sự hướng dẫn của giáo viên.\r\n– Trình bày được tầm quan trọng của sự an toàn và hợp pháp của thông tin cá nhân và tập thể, nêu được\r\nví dụ minh hoạ.\r\n– Bảo vệ được thông tin và tài khoản cá nhân với sự hỗ trợ của người lớn.\r\n– Nêu được một vài cách thông dụng để chia sẻ thông tin của bản thân và tập thể sao cho an toàn và\r\nhợp pháp.\r\n– Nhận diện được một số thông điệp (chẳng hạn email, yêu cầu kết bạn, lời mời tham gia câu lạc bộ,...)\r\nlừa đảo hoặc mang nội dung xấu."
+  },
+  "chu_de_5": {
+    "ten": "Ứng dụng tin học",
+    "Soạn thảo văn bản cơ bản": "– Trình bày được tác dụng của công cụ căn lề, định dạng, tìm kiếm, thay thế trong phần mềm soạn thảo\r\nvăn bản.\r\n– Thực hiện được việc định dạng văn bản, trình bày trang văn bản và in.\r\n– Sử dụng được công cụ tìm kiếm và thay thế của phần mềm soạn thảo.\r\n– Trình bày được thông tin ở dạng bảng.\r\n– Soạn thảo được văn bản phục vụ học tập và sinh hoạt hàng ngày.\r\n– Nêu được các chức năng đặc trưng củanhững phần mềm soạn thảo văn bản.",
+    "Sơ đồ tư duy và phần mềm sơ đồ tư duy": "– Sắp xếp được một cách logic và trình bày được dưới dạng sơ đồ tư duy các ý tưởng, khái niệm.\r\n– Giải thích được lợi ích của sơ đồ tư duy, nêu được nhu cầu sử dụng phần mềm sơ đồ tư duy trong học\r\ntập và trao đổi thông tin.\r\n– Sử dụng được phần mềm để tạo sơ đồ tư duy đơn giản phục vụ học tập và trao đổi thông tin."
+  },
+  "chu_de_6": {
+    "ten": "Giải quyết vấn đề với sự trợ giúp của máy tính",
+    "Khái niệm thuật toán và biểu diễn thuật toán": "– Diễn tả được sơ lược khái niệm thuật toán, nêu được một vài ví dụ minh hoạ.\r\n– Mô tả được thuật toán đơn giản có các cấu trúc tuần tự, rẽ nhánh và lặpdưới dạng liệt kê hoặc\r\nsơ đồ khối.\r\n– Biết được chương trình là mô tả một thuật toán để máy tính “hiểu” và thực hiện được."
+  }
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký - ChatBot {{ get_current_grade_name() }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-title">Đăng ký tài khoản</div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form class="register-form" method="post">
+            <label for="username">Tên đăng nhập</label>
+            <input type="text" id="username" name="username" required autofocus>
+            <label for="password">Mật khẩu</label>
+            <input type="password" id="password" name="password" required>
+            <label for="class_name">Tên lớp (Ví dụ: 9A1, 9A2...)</label>
+            <input type="text" id="class_name" name="class_name" placeholder="Nhập tên lớp của bạn">
+            <button type="submit">Đăng ký</button>
+        </form>
+        <a class="register-link" href="{{ url_for('login') }}">Đã có tài khoản? Đăng nhập</a>
+        <a class="register-link" href="{{ url_for('index') }}" style="color: #666; margin-top: 25px; display: block; text-decoration: none; text-align: center;">← Quay lại trang chủ</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cấu hình hệ thống - ChatBot Tin học 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="config-container">
+        <div class="config-title">Cấu hình hệ thống</div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="post">
+            <label for="CURRENT_GRADE">Tên khối lớp (Ví dụ: Tin học 9)</label>
+            <input type="text" id="CURRENT_GRADE" name="CURRENT_GRADE" value="{{ config.CURRENT_GRADE or 'Tin học 9' }}" required>
+
+            <label for="DATA_FILE">File kiến thức (Ví dụ: informatics9.json)</label>
+            <select id="DATA_FILE" name="DATA_FILE" required style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd; margin-bottom: 15px;">
+                {% for f in json_files %}
+                <option value="{{ f }}" {% if f == config.DATA_FILE %}selected{% endif %}>{{ f }}</option>
+                {% endfor %}
+            </select>
+
+            <hr>
+            
+            <label for="API_KEY">API Key Gemini (Primary)</label>
+            <input type="text" id="API_KEY" name="API_KEY" value="{{ config.API_KEY }}" required>
+            
+            <label for="OPENROUTER_API_KEY">API Key OpenRouter (Fallback)</label>
+            <input type="text" id="OPENROUTER_API_KEY" name="OPENROUTER_API_KEY" value="{{ config.OPENROUTER_API_KEY }}" placeholder="Nhập OpenRouter API Key nếu có">
+            
+            <label for="OPENROUTER_MODEL">Model OpenRouter</label>
+            <input type="text" id="OPENROUTER_MODEL" name="OPENROUTER_MODEL" value="{{ config.OPENROUTER_MODEL or 'google/gemini-2.0-flash-001' }}">
+
+            <label for="MAX_TOKEN">Giới hạn token (MAX_TOKEN)</label>
+            <input type="number" id="MAX_TOKEN" name="MAX_TOKEN" value="{{ config.MAX_TOKEN }}" min="512" max="4096" required>
+            
+            <button class="form-btn" type="submit">Lưu cấu hình</button>
+        </form>
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">← Quay lại quản trị</a>
+    </div>
+</body>
+</html>

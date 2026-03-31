@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản trị chủ đề & tài khoản - ChatBot Tin học 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-title">Quản trị hệ thống: {{ get_current_grade_name() }}</div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <div class="admin-actions">
+            <a href="{{ url_for('admin_add') }}">+ Thêm chủ đề mới</a>
+            <a href="{{ url_for('admin_config') }}">Cấu hình hệ thống</a>
+            <a href="{{ url_for('admin_logs') }}">Xem log lỗi Gemini</a>
+            <a href="{{ url_for('admin_stats') }}">Thống kê câu hỏi</a>
+            <a href="{{ url_for('logout') }}">Đăng xuất</a>
+            <a href="{{ url_for('index') }}">Về trang chat</a>
+        </div>
+        <div class="section-title">Danh sách chủ đề</div>
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Tên chủ đề</th>
+                <th>Nội dung</th>
+                <th>Thao tác</th>
+            </tr>
+            {% for key, lesson in lessons.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ lesson.ten }}</td>
+                <td>
+                    {% for k, v in lesson.items() %}
+                        {% if k != 'ten' %}
+                            <div style="margin-bottom: 8px;">
+                                <strong style="color: #1976d2;">{{ k }}:</strong><br>
+                                <span style="font-size: 0.9em; color: #555; white-space: pre-wrap; display: block;">{{ v }}</span>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <a class="admin-btn" href="{{ url_for('admin_edit', key=key) }}">Sửa</a>
+                    <form method="post" action="{{ url_for('admin_delete', key=key) }}" style="display:inline;" onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                        <button class="admin-btn delete" type="submit">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="section-title">Quản lý tài khoản người dùng & admin</div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Tên đăng nhập</th>
+                <th>Lớp</th>
+                <th>Vai trò</th>
+                <th>Thao tác</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.class_name if user.class_name else '-' }}</td>
+                <td>
+                    {% if user.is_admin %}
+                        <span style="color:#388e3c;font-weight:bold;">Admin</span>
+                    {% else %}
+                        Người dùng
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="admin-btn" style="background: #fb8c00;" onclick="changePassword({{ user.id }}, '{{ user.username }}')">Đổi MK</button>
+                    {% if not user.is_admin %}
+                    <form method="post" action="{{ url_for('admin_set_admin', user_id=user.id) }}" style="display:inline;">
+                        <button class="admin-btn role" type="submit" onclick="return confirm('Chuyển thành admin?');">Cấp quyền admin</button>
+                    </form>
+                    {% endif %}
+                    {% if session['user'] != user.username %}
+                    <form method="post" action="{{ url_for('admin_delete_user', user_id=user.id) }}" style="display:inline;">
+                        <button class="admin-btn delete" type="submit" onclick="return confirm('Xóa tài khoản này?');">Xóa</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Hidden form for changing password -->
+    <form id="changePasswordForm" method="post" style="display:none;">
+        <input type="hidden" name="new_password" id="newPasswordInput">
+    </form>
+
+    <script>
+        function changePassword(userId, username) {
+            const newPassword = prompt(`Nhập mật khẩu mới cho tài khoản "${username}":`);
+            if (newPassword && newPassword.trim() !== "") {
+                const form = document.getElementById('changePasswordForm');
+                form.action = `/admin/change_password/${userId}`;
+                document.getElementById('newPasswordInput').value = newPassword;
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

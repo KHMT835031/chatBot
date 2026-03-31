@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Log lỗi Gemini API - ChatBot Tin học 9</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="logs-container">
+        <div class="logs-title">Log lỗi Gemini API</div>
+        <div class="logs-list">
+            {% if logs %}
+                {% for line in logs %}
+                    {{ line }}
+                {% endfor %}
+            {% else %}
+                Không có lỗi nào được ghi nhận.
+            {% endif %}
+        </div>
+        <a class="back-link" href="{{ url_for('admin_dashboard') }}">← Quay lại quản trị</a>
+    </div>
+</body>
+</html>
