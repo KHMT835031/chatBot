@@ -646,76 +646,13 @@ def admin_stats():
         user = s["username"]
         user_count[user] = user_count.get(user, 0) + 1
 
-    # Thống kê chủ đề được hỏi nhiều nhất (kết hợp matched_keys và Gemini API)
+    # Thống kê chủ đề được hỏi nhiều nhất (chỉ dùng matched_keys có sẵn)
     topic_count = {}
-    config = load_config()
-    api_key = config.get("API_KEY", API_KEY)
-    headers = {"Content-Type": "application/json"}
-    url = get_gemini_url(api_key)
-
-    def gemini_classify_topic(question):
-        config = load_config()
-        api_key = config.get("API_KEY", API_KEY)
-        or_api_key = config.get("OPENROUTER_API_KEY", OPENROUTER_API_KEY)
-        or_model = config.get("OPENROUTER_MODEL", OPENROUTER_MODEL)
-        grade_name = get_current_grade_name()
-        
-        prompt = (
-            f"Bạn là trợ lý {grade_name}. Dưới đây là các chủ đề chương trình {grade_name}:\n"
-            + "\n".join([f"- {k}: {lessons[k]['ten']}" for k in lesson_keys]) +
-            f"\n\nCâu hỏi: \"{question}\"\n"
-            "Hãy trả lời duy nhất bằng key chủ đề phù hợp nhất trong danh sách trên (ví dụ: chu_de_1, chu_de_2, ...). Nếu không rõ thì trả về 'unknown'."
-        )
-        data = {
-            "contents": [
-                {
-                    "parts": [
-                        {"text": prompt}
-                    ]
-                }
-            ]
-        }
-        url = get_gemini_url(api_key)
-        try:
-            resp = requests.post(url, headers=headers, json=data, timeout=8)
-            result = resp.json()
-            if "candidates" in result:
-                text = result["candidates"][0]["content"]["parts"][0]["text"].strip()
-                key = text.split()[0]
-                if key in lesson_keys:
-                    return key
-            
-            # Nếu Gemini lỗi, thử OpenRouter
-            if or_api_key:
-                headers_or = {
-                    "Authorization": f"Bearer {or_api_key}",
-                    "Content-Type": "application/json"
-                }
-                data_or = {
-                    "model": or_model,
-                    "messages": [{"role": "user", "content": prompt}]
-                }
-                resp_or = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers_or, json=data_or, timeout=8)
-                result_or = resp_or.json()
-                if "choices" in result_or:
-                    text = result_or["choices"][0]["message"]["content"].strip()
-                    key = text.split()[0]
-                    if key in lesson_keys:
-                        return key
-            return "unknown"
-        except Exception as e:
-            log_error(f"Classify error (fallback to OR if available): {str(e)}")
-            return "unknown"
 
     for s in stats:
         matched = s.get("matched_keys", [])
         if matched:
             for key in matched:
-                topic_count[key] = topic_count.get(key, 0) + 1
-        else:
-            # Dùng Gemini API để phân loại chủ đề nếu chưa có matched_keys
-            key = gemini_classify_topic(s["question"])
-            if key != "unknown":
                 topic_count[key] = topic_count.get(key, 0) + 1
 
     user_count_sorted = sorted(user_count.items(), key=lambda x: x[1], reverse=True)
