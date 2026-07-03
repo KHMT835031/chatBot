@@ -14,7 +14,7 @@ load_dotenv()
 
 API_KEY = os.getenv("GEMINI_API_KEY")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.0-flash-001")
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash-lite")
 MAX_TOKEN_ENV = int(os.getenv("MAX_TOKEN", 2048))
 app_secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 DATABASE_URL = os.getenv("DATABASE_URL") # Tham số mới cho Neon/Postgres
